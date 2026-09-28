@@ -1,0 +1,15 @@
+{
+  "city": "Barcelona",
+  "timezone": "Europe/Madrid",
+  "feeds": [
+    {
+      "name": "Agenda Cultural de Catalunya · Barcelona",
+      "url": "PASTE_YOUR_BARCELONA_RSS_URL_HERE"
+    }
+  ],
+  "notes": [
+    "Generate the RSS URL from https://agenda.cultura.gencat.cat/ca/rss.html",
+    "Select Barcelona as the municipality and choose relevant themes (visual arts, cinema, shows, music).",
+    "Paste the generated RSS URL into the url field above. You only need to do this once."
+  ]
+}

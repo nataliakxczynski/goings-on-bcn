@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3eee4">
+<title>Goings On · Barcelona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Libre+Franklin:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f3eee4;--ink:#34251c;--muted:#806950;--rule:#d2c4b0;--accent:#624833;--panel:#e9dfd0}
+*{box-sizing:border-box}
+body{margin:0;background:transparent;color:var(--ink);font-family:"Libre Franklin",Arial,sans-serif}
+button,a{font:inherit}
+button{cursor:pointer}
+.shell{background:var(--paper);border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.cover{padding:22px 20px 16px;position:relative}
+.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.muted{color:var(--muted)}
+.serif-title{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-weight:500;letter-spacing:-.055em;font-size:clamp(48px,10vw,68px);line-height:.92;margin:11px 0 0}
+.subtitle{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-style:italic;margin-top:7px}
+.meta{font-size:10px;letter-spacing:.18em;margin-top:14px}
+.rule{border:0;border-top:1px solid var(--rule);margin:16px 0}
+.toggle{position:absolute;right:16px;top:16px;border:0;background:transparent;font-size:23px;color:var(--ink);padding:0 4px}
+.summaryline{font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+.body{padding:0 20px 18px}
+.controls{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.chip,.monthbtn{border:1px solid #cbbb a7;border:1px solid #cbbba7;border-radius:30px;background:transparent;padding:7px 11px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.chip.active,.monthbtn.active{background:var(--accent);color:#fffaf1;border-color:var(--accent)}
+.toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:17px 0 4px}
+.listing{display:grid;grid-template-columns:43px minmax(0,1fr) 22px;gap:12px;padding:15px 0;border-bottom:1px solid var(--rule);align-items:start}
+.date{font-family:"Cormorant Garamond",Georgia,serif;font-size:29px;line-height:1}
+.month{font-size:10px;letter-spacing:.15em;margin-bottom:5px}
+.kind{font-size:9px;letter-spacing:.17em;color:#8a694b;text-transform:uppercase}
+.event-name{font-family:"Cormorant Garamond",Georgia,serif;font-size:25px;font-weight:500;line-height:1.05;margin:4px 0}
+.place,.description{font-size:12px;line-height:1.55}
+.description{margin-top:4px}
+.more{border:0;background:none;font-size:22px;padding:10px 0;color:var(--ink)}
+.detail{font-size:12px;line-height:1.6;padding:8px 0 3px}
+.link{color:#775638;text-decoration:underline;text-underline-offset:3px;font-size:12px}
+.save{border:0;background:none;color:#775638;font-size:11px;padding:7px 0}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.savedbox{background:var(--panel);padding:13px;border-radius:4px;font-size:12px}
+.savedrow{padding:8px 0;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;gap:8px}
+.quote{font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;line-height:1.15;text-align:center;font-style:italic;padding:18px 0}
+.footer{text-align:center;font-size:9px;letter-spacing:.18em;padding:12px 8px;border-top:1px solid var(--rule);color:var(--muted)}
+.status{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+.empty{padding:22px 0;font-family:"Cormorant Garamond",Georgia,serif;font-size:20px}
+.hidden{display:none!important}
+@media(max-width:460px){.bottom{grid-template-columns:1fr}.cover{padding-right:43px}.body{padding-left:15px;padding-right:15px}.toolbar{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell" id="app">
+  <header class="cover">
+    <button class="toggle" id="toggle" aria-label="Abrir agenda" aria-expanded="false">⌄</button>
+    <div class="eyebrow muted">The Barcelona Cultural Dispatch</div>
+    <h1 class="serif-title">GOINGS ON</h1>
+    <div class="subtitle">Culture, art &amp; other diversions.</div>
+    <div class="meta muted">BARCELONA &nbsp;·&nbsp; CULTURAL LISTINGS</div>
+    <hr class="rule">
+    <div class="summaryline muted" id="summary">A small, considered guide to the city</div>
+  </header>
+  <main id="content" class="hidden">
+    <div class="body">
+      <hr class="rule" style="margin-top:0">
+      <div class="controls" id="categories"></div>
+      <div class="toolbar">
+        <span class="eyebrow muted" id="count">SELECTED HAPPENINGS</span>
+        <label class="eyebrow muted">WHEN &nbsp;
+          <select id="month-select" style="font:inherit;letter-spacing:.08em;color:var(--muted);background:transparent;border:0;max-width:150px">
+            <option value="all">All upcoming</option>
+            <option value="0">This month</option>
+            <option value="1">Next month</option>
+            <option value="2">In two months</option>
+          </select>
+        </label>
+      </div>
+      <div id="list"></div>
+      <div id="status" class="status"></div>
+      <div class="bottom">
+        <section class="savedbox">
+          <div class="eyebrow">Your little black book</div>
+          <div id="saved-count" style="margin:8px 0">No plans saved yet</div>
+          <div id="saved"></div>
+          <button id="copy" class="link" style="border:0;background:none;padding:10px 0 0">Copy saved plans ↗</button>
+        </section>
+        <section>
+          <div class="eyebrow muted">Browse by month</div>
+          <div id="months" class="controls" style="margin-top:12px"></div>
+          <div class="quote">The city is a museum,<br>and you're lucky enough<br>to live in it.</div>
+        </section>
+      </div>
+    </div>
+    <footer class="footer">A LITTLE CULTURE GOES A LONG WAY.</footer>
+  </main>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const state = {open:false, category:'All', month:'all', saved:new Set(), expanded:new Set(), events:[], lastUpdated:null, sourceCount:0};
+  const categories = ['All','Opera & dance','Classical','Jazz','Theatre','Cinema','Art & exhibitions','Architecture & history','Other'];
+  const categoryOf = e => {
+    const s = `${e.category||''} ${e.title||''} ${e.description||''} ${e.venue||''}`.toLowerCase();
+    if(/òpera|opera|òperes/.test(s)) return 'Opera & dance';
+    if(/dansa|dance|ballet/.test(s)) return 'Opera & dance';
+    if(/jazz/.test(s)) return 'Jazz';
+    if(/música clàssica|classical|música de cambra|orquestra|symphon|simfònic|coral/.test(s)) return 'Classical';
+    if(/teatre|teatro|theatre|teatre|circ|espectacle|dansa/.test(s)) return 'Theatre';
+    if(/cinema|film|pel·lícula|projecció/.test(s)) return 'Cinema';
+    if(/exposició|exposicio|exhibition|museu|museo|galeria|arts visuals|art contemporani/.test(s)) return 'Art & exhibitions';
+    if(/arquitect|patrimoni|història|historia|visita guiada|ruta|monument/.test(s)) return 'Architecture & history';
+    return 'Other';
+  };
+  const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const parseDate = e => e.startDate ? new Date(e.startDate) : null;
+  const monthLabel = d => d.toLocaleDateString('en-GB',{month:'short'}).toUpperCase();
+  const validEvents = () => {
+    const now = new Date(); now.setHours(0,0,0,0);
+    return state.events.filter(e => {
+      const d=parseDate(e);
+      return d && !Number.isNaN(d.getTime()) && d >= now && d <= new Date(now.getTime()+120*86400000);
+    }).sort((a,b)=>parseDate(a)-parseDate(b));
+  };
+  function render(){
+    const all=validEvents();
+    $('summary').textContent = `${all.length} upcoming listings · Opera · Theatre · Art · Film · Music`;
+    $('categories').innerHTML=categories.map(c=>`<button class="chip ${c===state.category?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+    const monthOptions=['all','0','1','2'];
+    const filtered=all.filter(e=>{
+      const c=categoryOf(e);
+      if(state.category!=='All' && c!==state.category) return false;
+      if(state.month!=='all'){
+        const target=new Date(); target.setDate(1); target.setHours(0,0,0,0); target.setMonth(target.getMonth()+Number(state.month));
+        const d=parseDate(e);
+        if(d.getFullYear()!==target.getFullYear()||d.getMonth()!==target.getMonth()) return false;
+      }
+      return true;
+    }).slice(0,35);
+    $('count').textContent=`${filtered.length} SELECTED HAPPENING${filtered.length===1?'':'S'}`;
+    $('list').innerHTML=filtered.length?filtered.map(e=>{
+      const d=parseDate(e), id=e.id;
+      const category=categoryOf(e), isOpen=state.expanded.has(id);
+      const dateUrl=e.url && /^https?:\/\//i.test(e.url) ? e.url : '';
+      return `<article class="listing">
+        <div><div class="month muted">${monthLabel(d)}</div><div class="date">${String(d.getDate()).padStart(2,'0')}</div></div>
+        <div>
+          <div class="kind">${esc(category)}</div>
+          <div class="event-name">${esc(e.title)}</div>
+          <div class="place muted">${esc(e.venue||'Barcelona')}</div>
+          <div class="description">${esc(e.description||'Consulta la información del evento en la página de origen.')}</div>
+          ${isOpen?`<div class="detail">${esc(e.detail||e.description||'')}</div>${dateUrl?`<a class="link" href="${esc(dateUrl)}" target="_blank" rel="noopener noreferrer">Official information ↗</a>`:''}<br><button class="save" data-save="${esc(id)}">${state.saved.has(id)?'★ Saved':'＋ Save plan'}</button>`:''}
+        </div>
+        <button class="more" data-expand="${esc(id)}" aria-label="${isOpen?'Cerrar':'Ver detalles'}">${isOpen?'⌃':'›'}</button>
+      </article>`;
+    }).join(''):`<div class="empty">No upcoming events match these filters just now. Try another category.</div>`;
+    $('status').textContent=state.lastUpdated?`Last refreshed ${new Date(state.lastUpdated).toLocaleString('es-ES',{dateStyle:'medium',timeStyle:'short'})}. Listings are collected from public cultural agendas; please confirm details with the organiser.`:'Loading the latest cultural listings…';
+    $('months').innerHTML=['all','0','1','2'].map((m,i)=>`<button class="monthbtn ${state.month===m?'active':''}" data-month="${m}">${['ALL','THIS MONTH','NEXT MONTH','+2 MONTHS'][i]}</button>`).join('');
+    const saved=all.filter(e=>state.saved.has(e.id));
+    $('saved-count').textContent=saved.length?`${saved.length} plan${saved.length===1?'':'s'} saved`:'No plans saved yet';
+    $('saved').innerHTML=saved.map(e=>`<div class="savedrow"><span>${esc(e.title)}<br><span class="muted">${monthLabel(parseDate(e))} ${parseDate(e).getDate()} · ${esc(e.venue||'Barcelona')}</span></span><button data-unsave="${esc(e.id)}" aria-label="Remove saved plan" style="border:0;background:none">×</button></div>`).join('');
+  }
+  $('toggle').addEventListener('click',()=>{
+    state.open=!state.open; $('content').classList.toggle('hidden',!state.open);
+    $('toggle').textContent=state.open?'×':'⌄';
+    $('toggle').setAttribute('aria-expanded',String(state.open));
+    $('toggle').setAttribute('aria-label',state.open?'Cerrar agenda':'Abrir agenda');
+  });
+  $('categories').addEventListener('click',e=>{const b=e.target.closest('[data-cat]');if(b){state.category=b.dataset.cat;render();}});
+  $('months').addEventListener('click',e=>{const b=e.target.closest('[data-month]');if(b){state.month=b.dataset.month;$('month-select').value=state.month;render();}});
+  $('month-select').addEventListener('change',e=>{state.month=e.target.value;render();});
+  $('list').addEventListener('click',e=>{
+    const ex=e.target.closest('[data-expand]'), sv=e.target.closest('[data-save]');
+    if(ex){const id=ex.dataset.expand;state.expanded.has(id)?state.expanded.delete(id):state.expanded.add(id);render();}
+    if(sv){const id=sv.dataset.save;state.saved.has(id)?state.saved.delete(id):state.saved.add(id);render();}
+  });
+  $('saved').addEventListener('click',e=>{const b=e.target.closest('[data-unsave]');if(b){state.saved.delete(b.dataset.unsave);render();}});
+  $('copy').addEventListener('click',async()=>{
+    const lines=validEvents().filter(e=>state.saved.has(e.id)).map(e=>`${e.title} — ${e.startDate}\n${e.venue||'Barcelona'}\n${e.url||''}`);
+    if(!lines.length){$('copy').textContent='Save a plan first';return;}
+    try{await navigator.clipboard.writeText(lines.join('\n\n'));$('copy').textContent='Copied ✓';}catch(e){$('copy').textContent='Clipboard unavailable';}
+  });
+  fetch('./events.json?cache='+Date.now()).then(r=>{if(!r.ok)throw Error('No events file');return r.json();}).then(data=>{
+    state.events=Array.isArray(data.events)?data.events:[];
+    state.lastUpdated=data.generatedAt||null;
+    render();
+  }).catch(()=>{
+    state.events=[];state.lastUpdated=null;
+    $('summary').textContent='Your cultural guide to Barcelona';
+    $('list').innerHTML='<div class="empty">The agenda is being prepared. Once you add a cultural RSS feed and enable the GitHub Actions workflow, upcoming events will appear here automatically.</div>';
+    $('status').textContent='Setup needed: see README.md in the repository.';
+    $('categories').innerHTML=categories.map(c=>`<button class="chip ${c==='All'?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  });
+})();
+</script>
+</body>
+</html>
