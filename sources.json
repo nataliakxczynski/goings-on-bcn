@@ -4,7 +4,7 @@
   "feeds": [
     {
       "name": "Agenda Cultural de Catalunya · Barcelona",
-      "url": "PASTE_YOUR_BARCELONA_RSS_URL_HERE"
+      "url": "https://agenda.cultura.gencat.cat/ca/resultats.html/poblacio-municipi/barcelona/ambits/arts-visuals+cinema+espectacles+gastronomia+llibres-i-lletres+musica/presencial/?page=0#results__top"
     }
   ],
   "notes": [
